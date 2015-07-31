@@ -1,13 +1,23 @@
 {
   "name": "inc",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "plugin.js",
-  "keywords": ["inc", "dec", "increment", "decrement", "add", "substract"],
+  "keywords": [
+    "inc",
+    "dec",
+    "increment",
+    "decrement",
+    "add",
+    "substract"
+  ],
   "description": "Increment or decrement numbers under the cursor",
   "repository": "https://github.com/jkroso/atom-inc",
   "license": "MIT",
   "activationCommands": {
-    "atom-text-editor": ["inc:inc", "inc:dec"]
+    "atom-text-editor": [
+      "inc:inc",
+      "inc:dec"
+    ]
   },
   "engines": {
     "atom": "1"
