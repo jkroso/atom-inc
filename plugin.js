@@ -7,12 +7,10 @@ function isUpperCase(word) {
 
 function inc(editor, increment) {
   editor.getCursors().forEach(function(cursor) {
-    var range = cursor.getCurrentWordBufferRange({
-      wordRegex: /-?\d+|\w+/i
-    })
-    if (!range) return
+    var range = cursor.getCurrentWordBufferRange({ wordRegex: /-?\w+/ })
     var oldword = editor.getTextInBufferRange(range)
-    var number = Number(oldword)
+    if (oldword == '') return
+    var number = parseInt(oldword, 10)
     if (isNaN(number)) {
       if (oldword == 'true') var word = 'false'
       else if (oldword == 'false') var word = 'true'
@@ -31,6 +29,7 @@ function inc(editor, increment) {
       }
     } else {
       var word = (number + increment).toString(10)
+               + oldword.slice(number.toString(10).length)
     }
 
     // change oldword
