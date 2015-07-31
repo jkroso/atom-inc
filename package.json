@@ -10,7 +10,7 @@
     "add",
     "substract"
   ],
-  "description": "Increment or decrement numbers under the cursor",
+  "description": "Quickly tweak word case, number, booleans",
   "repository": "https://github.com/jkroso/atom-inc",
   "license": "MIT",
   "activationCommands": {
