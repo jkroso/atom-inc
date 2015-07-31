@@ -1,28 +1,3 @@
-var word = /\w|-/
-
-function getWordUnderCursor(cursor) {
-  var line = cursor.getCurrentBufferLine()
-  var pos = cursor.getBufferPosition()
-  var start = pos.column
-  var end = pos.column
-  if (!word.test(line[start])) {
-    if (!word.test(line[start-1])) return
-    start = end = start - 1
-  }
-  var l = line.length
-  while (start > 0 && word.test(line[start-1])) start--
-  while (end < l && word.test(line[end+1])) end++
-  while (line[end] == '-') end--
-  if (start > end) return // all dots
-  return {
-    text: line.slice(start, end + 1),
-    start: start,
-    end: end + 1,
-    column: pos.column,
-    row: pos.row
-  }
-}
-
 function isUpperCase(word) {
   for (var i = 0; i < word.length; i++) {
     if (word[i].toUpperCase() != word[i]) return false
@@ -32,34 +7,34 @@ function isUpperCase(word) {
 
 function inc(editor, increment) {
   editor.getCursors().forEach(function(cursor) {
-    var match = getWordUnderCursor(cursor)
-    if (!match) return
-    var number = Number(match.text)
+    var range = cursor.getCurrentWordBufferRange({
+      wordRegex: /-?\d+|\w+/i
+    })
+    if (!range) return
+    var oldword = editor.getTextInBufferRange(range)
+    var number = Number(oldword)
     if (isNaN(number)) {
-      if (match.text == 'true') var word = 'false'
-      else if (match.text == 'false') var word = 'true'
-      else if (isUpperCase(match.text)) {
+      if (oldword == 'true') var word = 'false'
+      else if (oldword == 'false') var word = 'true'
+      else if (isUpperCase(oldword)) {
         var word = increment > 0
-          ? match.text // already upper case
-          : match.text[0] + match.text.slice(1).toLowerCase()
-      } else if (isUpperCase(match.text[0])) {
+          ? oldword // already upper case
+          : oldword[0] + oldword.slice(1).toLowerCase()
+      } else if (isUpperCase(oldword[0])) {
         var word = increment > 0
-          ? match.text.toUpperCase()
-          : match.text[0].toLowerCase() + match.text.slice(1)
+          ? oldword.toUpperCase()
+          : oldword[0].toLowerCase() + oldword.slice(1)
       } else {
         var word = increment > 0
-          ? match.text[0].toUpperCase() + match.text.slice(1)
-          : match.text.toLowerCase()
+          ? oldword[0].toUpperCase() + oldword.slice(1)
+          : oldword.toLowerCase()
       }
     } else {
       var word = (number + increment).toString(10)
     }
 
-    // change text
-    word == match.text || editor.setTextInBufferRange([
-      [match.row, match.start], // start position
-      [match.row, match.end]    // end position
-    ], word)
+    // change oldword
+    word == oldword || editor.setTextInBufferRange(range, word)
   })
 }
 
